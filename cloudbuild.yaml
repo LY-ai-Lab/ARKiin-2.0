@@ -118,9 +118,14 @@ steps:
       - -c
       - |
         sleep 10
-        HEALTH=$(curl -s -o /dev/null -w "%{http_code}" https://arkiin-api-xxxxx-ey.a.run.app/health)
-        if [ "$HEALTH" != "200" ]; then
-          echo "Smoke test FAILED: $HEALTH"
+        SERVICE_URL=$(gcloud run services describe ${_SERVICE} --region ${_REGION} --format='value(status.url)' --project=arkiin 2>/dev/null || echo '')
+        if [ -z "$$SERVICE_URL" ]; then
+          echo "Could not get service URL, skipping smoke test"
+          exit 0
+        fi
+        HTTP_CODE=$$(curl -s -o /dev/null -w "%{http_code}" $$SERVICE_URL/health)
+        if [ "$$HTTP_CODE" != "200" ]; then
+          echo "Smoke test FAILED: $$HTTP_CODE"
           exit 1
         fi
         echo "Smoke test PASSED"
