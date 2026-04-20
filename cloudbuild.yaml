@@ -59,9 +59,9 @@ steps:
       - -c
       - |
         cd terraform
-terraform import -input=false google_service_account.cloud_run_sa projects/arkiin/serviceAccounts/arkiin-api-sa@arkiin.iam.gserviceaccount.com || true
-            terraform import -input=false google_artifact_registry_repository.docker projects/arkiin/locations/europe-west3/repositories/arkiin || true
-                    terraform apply -auto-approve -input=false
+        terraform import -input=false google_service_account.cloud_run_sa projects/arkiin/serviceAccounts/arkiin-api-sa@arkiin.iam.gserviceaccount.com || true
+        terraform import -input=false google_artifact_registry_repository.docker projects/arkiin/locations/europe-west3/repositories/arkiin || true
+        terraform apply -auto-approve -input=false
     waitFor: [terraform-init, docker-push-latest]
 
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
