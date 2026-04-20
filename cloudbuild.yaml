@@ -61,8 +61,12 @@ steps:
         cd terraform
         terraform state rm google_service_account.cloud_run_sa 2>/dev/null || true
         terraform state rm google_artifact_registry_repository.docker 2>/dev/null || true
+        terraform state rm google_firestore_database.default 2>/dev/null || true
+        terraform state rm google_storage_bucket.floor_plans 2>/dev/null || true
         terraform import -input=false google_service_account.cloud_run_sa projects/arkiin/serviceAccounts/arkiin-api-sa@arkiin.iam.gserviceaccount.com || true
         terraform import -input=false google_artifact_registry_repository.docker projects/arkiin/locations/europe-west3/repositories/arkiin || true
+        terraform import -input=false google_firestore_database.default projects/arkiin/databases/\(default\) || true
+        terraform import -input=false google_storage_bucket.floor_plans arkiin-floor-plans || true
         terraform apply -auto-approve -input=false -parallelism=1
     waitFor: [terraform-init, docker-push-latest]
 
